@@ -25,7 +25,7 @@ class HelloWorldTest {
     }
 
     @Test
-    @DisplayName("Run test case.")
+    @DisplayName("It should print Hello World.")
     void sayHelloWorld() {
         assertEquals("Hello World", helloWorld.sayHelloWorld());
     }

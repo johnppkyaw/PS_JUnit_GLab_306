@@ -13,7 +13,8 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.perscholas.model.Person;
@@ -24,14 +25,22 @@ import com.perscholas.model.Person;
  */
 public class AppTest
 {
+    SessionFactory factory;
+    Session session;
+
+
+    @BeforeEach
+    public void loadUp() {
+        factory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        session = factory.openSession();
+    }
 
 
     @Test
     public void testPersonLookUp() {
 
         //SessionFactory factory = new Configuration().configure().buildSessionFactory();
-        SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
-        Session session = factory.openSession();
+
 
         Transaction t = session.beginTransaction();
 
@@ -64,8 +73,7 @@ public class AppTest
         Person testPerson = new Person();
         testPerson.setName("Bill Board");
         assertEquals(tmp.toString(), testPerson.getName()); */
-
-        session.close();
+        t.commit();
         System.out.println("Session Closed");
     }
 
@@ -75,6 +83,24 @@ public class AppTest
         // GOAL:   Test that a Address Object exists in the database
         // with city="nyc"
         //=========================
+        String sql = "SELECT city FROM Address WHERE city ='nyc'";
+        TypedQuery<Object[]> query = session.createQuery(sql,
+                Object[].class);
+        List<Object[]> results = query.getResultList();
+        assertFalse(results.isEmpty(), "The results should not be empty");
 
+        for (Object[] a : results) {
+            //System.out.printf("%s. %s%n", a[0], a[1]);
+            Address testPerson = new Address();
+            testPerson.setCity("nyc");
+            assertEquals(a[0].toString(), testPerson.getCity());
+        }
+
+    }
+
+    @AfterEach
+    void cleanUp() {
+        session.close();
+        factory.close();
     }
 }

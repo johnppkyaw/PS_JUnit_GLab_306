@@ -14,10 +14,12 @@ public class IsGreaterTest {
         isGreater= new IsGreater();
     }
     @Test
+    @DisplayName("It should return true when first input " +
+            "is greater than second input")
     public void isGreaterTest() {
-        System.out.println("Test");
+        System.out.println("isGreaterTest test has ran");
         IsGreater tester = new IsGreater();
-        assertTrue(tester.isGreater(11, 90)," ITS TRUE.. ITS TRUE");
+        assertTrue(tester.isGreater(110, 90)," ITS TRUE.. ITS TRUE");
     }
 
     @AfterEach
